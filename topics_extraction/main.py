@@ -16,7 +16,7 @@ api_key = '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'
 app = Flask(__name__)
 cors = CORS(app, support_credentials=True, resources={r"/*": {"origins": "*"}})
 
-@app.route('/suggest', methods=['POST'])
+@app.route('/topics', methods=['POST'])
 def index():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'text/plain'):
@@ -39,7 +39,7 @@ def index():
         results = []
         for sentence in text_sentences:
             results.append(sentence)
-        response = jsonify(recommendations=results)
+        response = jsonify(topics=results)
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
     else:
@@ -52,16 +52,14 @@ def index():
 # Summarize this text and extract key insights:
 # chunk this text into 10 paragraphs:
 # predict overall sentiment:
-# Extract Key Insights without numbering and bullet points:
-# Extract Key Insights and overall sentiment of extracted Insights as either positive, negative, or neutral:
 
-def ideas(text,userPrompt="Return the important points to note from this text:"):
+def ideas(text,userPrompt="Highlight the key topics covered as single words separated by commas:"):
     openai.api_key = api_key
     response = openai.Completion.create(
     model="text-davinci-003",
     prompt=userPrompt + "\n\n" + text,
     temperature=0.6,
-    max_tokens=400,
+    max_tokens=150,
     top_p=1.0,
     frequency_penalty=1,
     presence_penalty=1
@@ -75,8 +73,8 @@ def ideas(text,userPrompt="Return the important points to note from this text:")
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
-# gcloud builds submit --tag gcr.io/text-tagging-api/suggest
-# gcloud run deploy --image gcr.io/text-tagging-api/suggest --platform managed
+# gcloud builds submit --tag gcr.io/text-tagging-api/topic_extraction
+# gcloud run deploy --image gcr.io/text-tagging-api/topic_extraction --platform managed
 
-# gcloud builds submit --tag gcr.io/insight7-353714/gpt3processor
-# gcloud run deploy --image gcr.io/insight7-353714/gpt3processor --platform managed
+# gcloud builds submit --tag gcr.io/insight7-353714/topic_extraction
+# gcloud run deploy --image gcr.io/insight7-353714/topic_extraction --platform managed
