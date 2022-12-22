@@ -11,7 +11,7 @@ from flask import jsonify
 import os
 from flask_cors import CORS, cross_origin
 nltk.download('punkt')
-api_key = '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'
+api_key = ''
 
 app = Flask(__name__)
 cors = CORS(app, support_credentials=True, resources={r"/*": {"origins": "*"}})
